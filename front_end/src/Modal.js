@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import Taggle from "taggle";
-let taggle = Taggle();
 
 class Modal extends Component {
   render() {
@@ -9,31 +7,25 @@ class Modal extends Component {
 
     return (
        <div className="modal" style={{display:modal ? "block": "none"}} >
-          <div className="modal-content">
-            <form onSubmit={this.props.addRecipe}>
-              <div className="form-group">
-                <label>Recipe Name:</label>
-                <input name="recipe_Name" onChange={this.props.handleInputChange} />
+          <div className="modal-content container">
+            <form id="create-recipe-form" >
+              <div className="form-group row">
+                <label className="col-sm-3 col-md-3 col-lg-2">Name:</label>
+                <input className="col-sm-9 col-md-9 col-lg-10" name="recipe_Name" onChange={this.props.handleInputChange} />
                 </div>
+              <div className="form-group row">
+                <label className="col-sm-3 col-md-3 col-lg-2">Ingredients:</label>
 
-
-
-              <div className="form-group">
-                <label>Ingredients</label>
-
-                <input id="example1" name="recipe_Ingredients" onChange={this.props.handleInputChange}/>
+                <div className="col-sm-9 col-md-9 col-lg-10 input textarea" id="example1"/>
                 </div>
-
-
-
-              <div className="form-group">
-                <label>Directions</label>
-                <textarea name="recipe_Directions" onChange={this.props.handleInputChange}/>
+              <div className="form-group row">
+                <label className="col-sm-3 col-md-3 col-lg-2">Directions:</label>
+                <textarea className="col-sm-9 col-md-9 col-lg-10" name="recipe_Directions" onChange={this.props.handleInputChange}/>
               </div>
 
 
 
-              <button className="btn btn-primary">Add Recipe!</button>
+              <button className="btn btn-primary" onClick={this.props.addRecipe}>Add Recipe!</button>
             </form>
             <span className="close" onClick={this.props.modalController}>&times;</span>
           </div>

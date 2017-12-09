@@ -1,89 +1,91 @@
 import React, { Component } from "react";
 import Modal from "./Modal";
-import taggle from "taggle"
+import { Accordion, Panel } from "react-bootstrap";
+import Taggle from "taggle";
+// import "./style/taggle.css";
+import "./style/taggle.min.css";
+import "./style/projects.min.css";
+import "./style/twilight.css";
 import "./App.css";
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      modal:false,
-
+      modal: false,
       listOfRecipes: [],
-      recipe: {
-            recipe_name: "",
-            ingredients: [],
-            directions: ""
-          },
-      value:"",
-      recipe_name:"",
-      recipe_directions:"",
-      recipe_ingredients:""
-    }
+      value: ""
+    };
     this.modalController = this.modalController.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.addRecipe = this.addRecipe.bind(this);
   }
-  modalController(){
+  modalController() {
     let showModal = this.state.modal;
     showModal = !showModal;
     this.setState({
-      modal:showModal
-
-    })
-    console.log(showModal)
+      modal: showModal
+    });
   }
 
-  handleInputChange(event){
+  handleInputChange(event) {
     const target = event.target;
     const value = target.value;
     const name = target.name;
-
     this.setState({
       [name]: value
-    })
+    });
   }
 
-  addRecipe(event){
+  addRecipe(event) {
     event.preventDefault();
     let listOfRecipes = this.state.listOfRecipes;
     let recipe = {
-            recipe_name: this.state.recipe_Name,
-            ingredients: [],
-            directions: this.state.recipe_Directions
-          }
-    console.log(recipe)
+      name: this.state.recipe_Name,
+      ingredients: [],
+      directions: this.state.recipe_Directions,
+      id: this.state.listOfRecipes.length
+    };
+    listOfRecipes.push(recipe);
+    this.setState({
+      listOfRecipes: listOfRecipes,
+      modal: false
+    });
+    document.getElementById("create-recipe-form").reset();
+    console.log(this.state.listOfRecipes);
+  }
 
-
-    // alert(`recipe name: ${this.state.recipe_Name} \nrecipe ingredients:${this.state.recipe_Ingredients} \nrecipe directions:${this.state.recipe_Directions}`)
-
+  componentDidMount(){
+    const listOfTags = new Taggle("example1",{
+    });
+    console.log(listOfTags.list)
 
   }
 
   render() {
+    let listOfRecipes = this.state.listOfRecipes.map(recipe => {
+      return (
+        <Panel header={recipe.name} eventKey={recipe.id} key={recipe.id}>
+          {recipe.directions}
+        </Panel>
+      );
+    });
+
     return (
       <div className="container">
-        <button className="add_Recipe" onClick={this.modalController}>Add Recipe</button>
-        <Modal modal={this.state.modal} addRecipe={this.addRecipe} handleInputChange={this.handleInputChange} modalController={this.modalController} />
+        <button className="add_Recipe" onClick={this.modalController}>
+          Add Recipe
+        </button>
+        <Modal
+          modal={this.state.modal}
+          addRecipe={this.addRecipe}
+          handleInputChange={this.handleInputChange}
+          modalController={this.modalController}
+        />
+        <Accordion>
+          {listOfRecipes}
+        </Accordion>
 
-
-        <ul className="list-group">
-          <li className="list-group-item">
-            <label>hello</label>
-          </li>
-          <li className="list-group-item">
-            <label>hello</label>
-          </li>
-          <li className="list-group-item">
-            <label>hello</label>
-          </li>
-          <li className="list-group-item">
-            <label>hello</label>
-          </li>
-        </ul>
-
-
-        <div id="example1" className="input textarea"></div>
       </div>
     );
   }
