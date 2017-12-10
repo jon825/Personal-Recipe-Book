@@ -19,6 +19,7 @@ class App extends Component {
     this.modalController = this.modalController.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.addRecipe = this.addRecipe.bind(this);
+    this.deleteRecipe = this.deleteRecipe.bind(this);
   }
   modalController() {
     let showModal = this.state.modal;
@@ -37,36 +38,54 @@ class App extends Component {
     });
   }
 
+  deleteRecipe(index){
+    let listOfRecipes = this.state.listOfRecipes;
+    let deleteRecipe = listOfRecipes.splice(index,1);
+    console.log(deleteRecipe)
+    this.setState({
+      listOfRecipes:listOfRecipes
+    })
+    console.log(this.state.listOfRecipes)
+  }
+
   addRecipe(event) {
     event.preventDefault();
     let listOfRecipes = this.state.listOfRecipes;
+    let arrayOfIngredients = document.getElementsByClassName("taggle");
+    arrayOfIngredients = Object.keys(arrayOfIngredients).map(key=>{
+      return arrayOfIngredients[key].innerText;
+    })
     let recipe = {
       name: this.state.recipe_Name,
-      ingredients: [],
+      ingredients: arrayOfIngredients,
       directions: this.state.recipe_Directions,
       id: this.state.listOfRecipes.length
     };
-    listOfRecipes.push(recipe);
-    this.setState({
-      listOfRecipes: listOfRecipes,
-      modal: false
-    });
-    document.getElementById("create-recipe-form").reset();
-    console.log(this.state.listOfRecipes);
+    if(recipe.name !== undefined && recipe.directions !== undefined){
+      document.getElementById("create-recipe-form").reset();
+
+      listOfRecipes.push(recipe);
+      this.setState({
+        recipe_Name:"",
+        recipe_Directions:"",
+        listOfRecipes: listOfRecipes,
+        modal: false
+      });
+    }
   }
 
   componentDidMount(){
-    const listOfTags = new Taggle("example1",{
-    });
-    console.log(listOfTags.list)
+    const listOfTags = new Taggle("example1");
+    listOfTags.removeAll();
 
   }
 
   render() {
-    let listOfRecipes = this.state.listOfRecipes.map(recipe => {
+    let listOfRecipes = this.state.listOfRecipes.map((recipe, index) => {
       return (
         <Panel header={recipe.name} eventKey={recipe.id} key={recipe.id}>
           {recipe.directions}
+          <span className="close" onClick={()=>{this.deleteRecipe(recipe.id)}}>&times;</span>
         </Panel>
       );
     });
