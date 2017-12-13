@@ -43,6 +43,8 @@ router.post('/update',(req, res) => {
     })
 })
 
+
+//need to figure out how to delete selected row from database;
 router.delete('/:id', (req,res)=>{
   Recipe.where({id: req.params.id})
     .destroy()
