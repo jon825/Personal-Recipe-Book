@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import Modal from "./Modal";
 import { Accordion, Panel } from "react-bootstrap";
 import Taggle from "taggle";
-// import "./style/taggle.css";
 import "./style/taggle.min.css";
 import "./style/projects.min.css";
 import "./style/twilight.css";
 import "./App.css";
+import axios from 'axios';
 
 class App extends Component {
   constructor() {
@@ -29,6 +29,18 @@ class App extends Component {
     });
   }
 
+  componentWillMount(){
+    axios.get('http://localhost:8080/api/recipes')
+      .then(res =>{
+        this.setState({listOfRecipes:res.data})
+      })
+  }
+
+  // componentWillUpdate(){
+  //   axios.post('http://localhost:8080/api/recipes/update', this.state.listOfRecipes);
+  // }
+
+
   handleInputChange(event) {
     const target = event.target;
     const value = target.value;
@@ -44,48 +56,46 @@ class App extends Component {
     console.log(deleteRecipe)
     this.setState({
       listOfRecipes:listOfRecipes
+    }, ()=>{
+      axios.delete('http://localhost:8080/api/recipes/:id', deleteRecipe)
     })
-    console.log(this.state.listOfRecipes)
   }
 
   addRecipe(event) {
     event.preventDefault();
     let listOfRecipes = this.state.listOfRecipes;
-    let arrayOfIngredients = document.getElementsByClassName("taggle");
-    arrayOfIngredients = Object.keys(arrayOfIngredients).map(key=>{
-      return arrayOfIngredients[key].innerText;
-    })
+    let listOfInputIngredients = this.taggle.getTagValues();
     let recipe = {
       name: this.state.recipe_Name,
-      ingredients: arrayOfIngredients,
+      ingredients: listOfInputIngredients,
       directions: this.state.recipe_Directions,
-      id: this.state.listOfRecipes.length
     };
     if(recipe.name !== undefined && recipe.directions !== undefined){
       document.getElementById("create-recipe-form").reset();
-
       listOfRecipes.push(recipe);
       this.setState({
         recipe_Name:"",
         recipe_Directions:"",
         listOfRecipes: listOfRecipes,
         modal: false
-      });
+      }, ()=>{
+        axios.post('http://localhost:8080/api/recipes/update', recipe);
+      })
     }
+    this.taggle.removeAll();
   }
 
   componentDidMount(){
-    const listOfTags = new Taggle("example1");
-    listOfTags.removeAll();
-
+    this.taggle = new Taggle("example1");
   }
 
   render() {
+
     let listOfRecipes = this.state.listOfRecipes.map((recipe, index) => {
       return (
-        <Panel header={recipe.name} eventKey={recipe.id} key={recipe.id}>
+        <Panel header={recipe.name} eventKey={index} key={index}>
           {recipe.directions}
-          <span className="close" onClick={()=>{this.deleteRecipe(recipe.id)}}>&times;</span>
+          <span className="close" onClick={()=>{this.deleteRecipe(index)}}>&times;</span>
         </Panel>
       );
     });
