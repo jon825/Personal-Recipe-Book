@@ -16,9 +16,6 @@ app.use(function(req, res, next) {
   next();
 });
 
-
-
-
 app.use('/api/recipes', recipes_routes);
 
 app.listen(PORT, () => {
