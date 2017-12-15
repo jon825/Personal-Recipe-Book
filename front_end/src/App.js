@@ -36,11 +36,6 @@ class App extends Component {
       })
   }
 
-  // componentWillUpdate(){
-  //   axios.post('http://localhost:8080/api/recipes/update', this.state.listOfRecipes);
-  // }
-
-
   handleInputChange(event) {
     const target = event.target;
     const value = target.value;
@@ -53,11 +48,13 @@ class App extends Component {
   deleteRecipe(index){
     let listOfRecipes = this.state.listOfRecipes;
     let deleteRecipe = listOfRecipes.splice(index,1);
-    console.log(deleteRecipe)
+    console.log(listOfRecipes)
+    console.log()
     this.setState({
       listOfRecipes:listOfRecipes
     }, ()=>{
-      axios.delete('http://localhost:8080/api/recipes/:id', deleteRecipe)
+      axios.delete('http://localhost:8080/api/recipes/' + deleteRecipe[0].id)
+
     })
   }
 
@@ -93,7 +90,7 @@ class App extends Component {
 
     let listOfRecipes = this.state.listOfRecipes.map((recipe, index) => {
       return (
-        <Panel header={recipe.name} eventKey={index} key={index}>
+        <Panel header={recipe.name} eventKey={recipe.id} key={index}>
           {recipe.directions}
           <span className="close" onClick={()=>{this.deleteRecipe(index)}}>&times;</span>
         </Panel>

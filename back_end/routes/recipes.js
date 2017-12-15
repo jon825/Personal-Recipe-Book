@@ -49,6 +49,8 @@ router.delete('/:id', (req,res)=>{
   Recipe.where({id: req.params.id})
     .destroy()
     .then(recipe=>{
+      console.log(recipe.attributes)
+
       res.json(recipe.attributes);
     })
     .catch(e =>{
